@@ -23,7 +23,7 @@ class DashboardScreen extends StatelessWidget {
 
   Widget _buildLinks(BuildContext context, {String title, IconData iconData}) {
     return Container(
-      height: 80.0,
+      height: 80,
       decoration: BoxDecoration(color: Colors.grey[100]),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
