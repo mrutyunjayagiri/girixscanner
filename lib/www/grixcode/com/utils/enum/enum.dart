@@ -1,0 +1,1 @@
+enum DocumentType { FILE, PDF, BARCODE, IMAGE, QR_CODE, XSLX, DOCUMENT }
