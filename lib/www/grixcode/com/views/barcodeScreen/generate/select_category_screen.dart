@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:girixscanner/www/grixcode/com/models/barcode/barcode.dart';
 import 'package:girixscanner/www/grixcode/com/scopedModel/main_model.dart';
 import 'package:girixscanner/www/grixcode/com/utils/enum/enum.dart';
+import 'package:girixscanner/www/grixcode/com/utils/theme/text_style.dart';
 import 'package:girixscanner/www/grixcode/com/views/barcodeScreen/generate/create_barcode.dart';
 import 'package:girixscanner/www/grixcode/com/views/barcodeScreen/generate/qr_code_type.dart';
 import 'package:girixscanner/www/grixcode/com/widgets/loader.dart';
@@ -115,7 +116,7 @@ class BarcodeCategoryTile extends StatelessWidget {
         ),
         title: Text(
           "${barcodeInfo.barcode.name}",
-          style: TextStyle(color: Colors.black),
+          style: CustomStyle(context).subtitle1.apply(fontWeightDelta: 1),
         ),
         subtitle: Text(
           "Accepted ${charset}",

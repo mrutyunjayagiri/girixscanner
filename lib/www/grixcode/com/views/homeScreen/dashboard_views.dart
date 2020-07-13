@@ -130,9 +130,8 @@ class DashboardScreen extends StatelessWidget {
             style: CustomStyle(context).headline6.apply(color: Colors.black87),
           ),
           MaterialButton(
-            onPressed: () =>
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (_) => Container())),
+            onPressed: () => Navigator.push(
+                context, MaterialPageRoute(builder: (_) => Container())),
             child: Text(
               "MORE",
               style: CustomStyle(context).caption,

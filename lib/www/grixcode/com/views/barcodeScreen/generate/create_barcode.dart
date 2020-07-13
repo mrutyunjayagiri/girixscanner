@@ -131,7 +131,7 @@ class _CreateBarcodeScreenState extends State<CreateBarcodeScreen>
       autofocus: false,
       decoration: InputDecoration(
 //              prefixIcon: Icon(Icons.person),
-        labelText: "Barcode name",
+        labelText: "File name",
         labelStyle: CustomStyle.labelStyle,
         errorStyle: CustomStyle.errorStyle,
         border: UnderlineInputBorder(
@@ -149,7 +149,7 @@ class _CreateBarcodeScreenState extends State<CreateBarcodeScreen>
       autofocus: false,
       decoration: InputDecoration(
 //              prefixIcon: Icon(Icons.person),
-        labelText: "Data",
+        labelText: "Data*",
         labelStyle: CustomStyle.labelStyle,
         errorStyle: CustomStyle.errorStyle,
         border: UnderlineInputBorder(
