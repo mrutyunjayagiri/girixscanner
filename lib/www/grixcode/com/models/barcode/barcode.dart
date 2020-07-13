@@ -162,4 +162,7 @@ final List<BarcodeInfo> barcodeInfoList = [
       barcode: Barcode.codabar(),
       category: BarcodeCategory.OneD,
       description:
-          "Codabar was designed to be accurately read even when printed on dot-matrix printers for multi-part forms such as FedEx airbills and blood bank forms, where variants are still in use a
+          "Codabar was designed to be accurately read even when printed on dot-matrix printers for multi-part forms such as FedEx airbills and blood bank forms, where variants are still in use as of 2007.",
+      method: "codabar()",
+      type: BarcodeType.Codabar)
+];

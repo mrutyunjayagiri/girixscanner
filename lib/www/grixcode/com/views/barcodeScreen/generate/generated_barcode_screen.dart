@@ -181,10 +181,7 @@ class _GeneratedBarcodeScreenState extends State<GeneratedBarcodeScreen> {
                 borderRadius: BorderRadius.circular(15.0)),
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 12.0),
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
+              width: MediaQuery.of(context).size.width,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
