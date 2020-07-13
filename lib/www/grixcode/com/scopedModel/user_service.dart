@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:girixscanner/www/grixcode/com/models/settings/settings.dart';
 import 'package:girixscanner/www/grixcode/com/models/user.dart';
 import 'package:girixscanner/www/grixcode/com/scopedModel/connected_model.dart';
 import 'package:girixscanner/www/grixcode/com/utils/sharedData/shared_pref.dart';
@@ -23,7 +24,11 @@ class UserService extends ConnectedModel {
       final email = prefs.getString("userEmail");
       final String id = prefs.getString("userId");
       if (id != null) {
+        // Update User
         user = User(email: email, id: id, name: username);
+
+        // Update Default Settings
+        settings = Settings();
         notifyListeners();
       } else {
         print("User is Not Logged In Currently");

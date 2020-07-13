@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primarySwatch: primaryColor,
+          primaryColor: primaryColor,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         home: SplashScreen(

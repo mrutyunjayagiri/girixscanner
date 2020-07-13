@@ -81,4 +81,22 @@ class AuthValidation {
     }
     return msg;
   }
+
+  String generalValidator(String value) {
+    String msg;
+    if (value.length == 0) {
+      msg = 'Please enter a value';
+    }
+    return msg;
+  }
+
+  String barcodeFontValidator(String value) {
+    String msg;
+    if (value.length == 0) {
+      msg = 'Please enter a value';
+    } else if (double.parse(value) > 90) {
+      msg = "Value can not be greater than 90";
+    }
+    return msg;
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:girixscanner/www/grixcode/com/scopedModel/main_model.dart';
+import 'package:girixscanner/www/grixcode/com/utils/theme/text_style.dart';
 import 'package:girixscanner/www/grixcode/com/utils/validator/auth_validator.dart';
 import 'package:girixscanner/www/grixcode/com/views/homeScreen/home_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -41,11 +42,8 @@ class _QuickSetupState extends State<QuickSetup> with AuthValidation {
       decoration: InputDecoration(
 //              prefixIcon: Icon(Icons.person),
         labelText: "Email",
-        labelStyle: TextStyle(fontSize: 16.0, color: Colors.black87),
-        errorStyle: TextStyle(
-          color: Colors.red,
-          fontSize: 18.6,
-        ),
+        labelStyle: CustomStyle.labelStyle,
+        errorStyle: CustomStyle.errorStyle,
         border: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.white),
             borderRadius: BorderRadius.circular(2)),
@@ -62,11 +60,8 @@ class _QuickSetupState extends State<QuickSetup> with AuthValidation {
       decoration: InputDecoration(
 //              prefixIcon: Icon(Icons.person),
         labelText: "Username",
-        labelStyle: TextStyle(fontSize: 16.0, color: Colors.black87),
-        errorStyle: TextStyle(
-          color: Colors.red,
-          fontSize: 18.6,
-        ),
+        labelStyle: CustomStyle.labelStyle,
+        errorStyle: CustomStyle.errorStyle,
         border: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.white),
             borderRadius: BorderRadius.circular(2)),

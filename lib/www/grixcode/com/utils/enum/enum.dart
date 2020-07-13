@@ -1,1 +1,26 @@
 enum DocumentType { FILE, PDF, BARCODE, IMAGE, QR_CODE, XSLX, DOCUMENT }
+enum ErrorResponse { ERROR, FAILED, EMPTY, SUCCESS }
+enum LoaderType { CIRCULAR, LINEAR }
+enum BarcodeTypeEnum {
+  Itf,
+  CodeITF14,
+  CodeEAN13,
+  CodeEAN8,
+  CodeEAN5,
+  CodeEAN2,
+  CodeISBN,
+  Code39,
+  Code93,
+  CodeUPCA,
+  CodeUPCE,
+  Code128,
+  GS128,
+  Telepen,
+  QrCode,
+  Codabar,
+  PDF417,
+  DataMatrix,
+  Aztec,
+  Rm4scc
+}
+enum BarcodeCategory { OneD, TwoD }
