@@ -8,7 +8,7 @@ import 'package:girixscanner/www/grixcode/com/scopedModel/main_model.dart';
 import 'package:girixscanner/www/grixcode/com/utils/enum/enum.dart';
 import 'package:girixscanner/www/grixcode/com/utils/theme/text_style.dart';
 import 'package:girixscanner/www/grixcode/com/views/barcodeScreen/barcode_screen.dart';
-import 'package:girixscanner/www/grixcode/com/views/barcodeScreen/generate/qr_code_type.dart';
+import 'package:girixscanner/www/grixcode/com/views/qrCodeScreen/qr_screen.dart';
 import 'package:girixscanner/www/grixcode/com/widgets/document_tile.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -31,8 +31,8 @@ class DashboardScreen extends StatelessWidget {
       final BarcodeInfo barcodeInfo = barcodeInfoList.firstWhere(
           (BarcodeInfo info) => info.type == BarcodeType.QrCode,
           orElse: null);
-      _widget = QrCodeTypeScreen(
-        barcodeInfo: barcodeInfo,
+      _widget = QrCodeScreen(
+        model: model,
       );
       _title = "Qr Code";
     }

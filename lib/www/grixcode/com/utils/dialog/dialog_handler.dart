@@ -6,6 +6,7 @@ class DialogHandler {
       @required Widget content,
       @required String titleText,
       Widget title,
+      List<Widget> actions,
       isBarrier = true}) {
     return showGeneralDialog<void>(
         barrierColor: Colors.black.withOpacity(0.5),
@@ -20,15 +21,12 @@ class DialogHandler {
             child: Opacity(
               opacity: a1.value,
               child: AlertDialog(
-                  contentPadding: EdgeInsets.all(5.0),
+//                  contentPadding: EdgeInsets.all(5.0),
 //                shape: OutlineInputBorder(
 //                    borderRadius: BorderRadius.circular(6.0)),
                   title: title ?? Text(titleText),
-                  content: Container(
-                    child: content,
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    height: 210.0,
-                  )),
+                  content: content,
+                  actions: actions),
             ),
           );
         });

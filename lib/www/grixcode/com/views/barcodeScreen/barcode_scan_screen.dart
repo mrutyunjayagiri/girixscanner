@@ -5,11 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:girixscanner/www/grixcode/com/scopedModel/main_model.dart';
+import 'package:girixscanner/www/grixcode/com/utils/dialog/dialog_handler.dart';
 import 'package:girixscanner/www/grixcode/com/utils/enum/enum.dart';
 import 'package:girixscanner/www/grixcode/com/utils/theme/text_style.dart';
 import 'package:girixscanner/www/grixcode/com/views/settings/barcode/barcode_settings_screen.dart';
 import 'package:girixscanner/www/grixcode/com/widgets/error/error.dart';
 import 'package:girixscanner/www/grixcode/com/widgets/loader.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class BarcodeScanScreen extends StatefulWidget {
   final MainModel model;
@@ -107,11 +109,45 @@ class _BarcodeScanScreenState extends State<BarcodeScanScreen> {
     );
   }
 
+  Future<bool> _checkPermission() async {
+    PermissionStatus status = await Permission.camera.status;
+    print(status);
+    if (status.isGranted) {
+      return true;
+    } else if (status.isDenied || status.isUndetermined) {
+      PermissionStatus _requestStatus = await Permission.camera.request();
+      if (_requestStatus.isGranted)
+        return true;
+      else
+        return false;
+    } else if (status.isPermanentlyDenied) {
+      return false;
+    } else {
+      return false;
+    }
+  }
+
   Future scan() async {
+    if (!await _checkPermission()) {
+      DialogHandler.showMyCustomDialog(
+        context: context,
+        content: ListTile(
+          title: Text("Camera permission required"),
+          leading: Icon(Icons.camera),
+          subtitle: Text("Open app settings"),
+        ),
+        titleText: "Permission",
+      ).then((value) {
+        openAppSettings().then((value) => print("Open App Settings: $value"));
+      });
+      return;
+    }
     setState(() {
       isLoading = true;
     });
+
     try {
+      print(widget.model.settings);
       var options = widget.model.settings.barcodeSettings.scanOptions;
 
       var result = await BarcodeScanner.scan(

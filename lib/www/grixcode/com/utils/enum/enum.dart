@@ -24,3 +24,18 @@ enum BarcodeTypeEnum {
   Rm4scc
 }
 enum BarcodeCategory { OneD, TwoD }
+
+enum QrCodeType {
+  WIFI,
+  URL,
+  TEXT,
+  LOCATION,
+  PHONE,
+  DOB,
+  ADDRESS,
+  MEMO,
+  EMAIL,
+  SOUND,
+  SMS,
+  VIDEO,
+}

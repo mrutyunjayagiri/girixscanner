@@ -22,6 +22,17 @@ class ErrorView extends StatelessWidget {
     }
   }
 
+  String get _title {
+    if (errorType == null) return "Something went wrong";
+    if (errorType == ErrorResponse.EMPTY) {
+      return "No data found";
+    } else if (errorType == ErrorResponse.ERROR) {
+      return "Internal error";
+    } else {
+      return "Unable to fetch";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -38,7 +49,7 @@ class ErrorView extends StatelessWidget {
             height: 25.0,
           ),
           Text(
-            "${title ?? "Something went wrong"}",
+            "${_title}",
             style: CustomStyle(context).headline6,
           ),
           SizedBox(

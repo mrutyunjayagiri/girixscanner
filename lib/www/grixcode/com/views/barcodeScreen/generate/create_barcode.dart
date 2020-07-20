@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:girixscanner/www/grixcode/com/models/barcode/barcode.dart';
+import 'package:girixscanner/www/grixcode/com/models/barcode/barcode_provider_model.dart';
 import 'package:girixscanner/www/grixcode/com/scopedModel/main_model.dart';
 import 'package:girixscanner/www/grixcode/com/utils/enum/enum.dart';
 import 'package:girixscanner/www/grixcode/com/utils/theme/text_style.dart';
@@ -52,7 +53,7 @@ class _CreateBarcodeScreenState extends State<CreateBarcodeScreen>
     });
   }
 
-  void _onCreateBarcode(MainModel model) {
+  void _onCreateBarcode(MainModel model) async {
     try {
       setState(() {
         isLoading = true;
@@ -85,14 +86,27 @@ class _CreateBarcodeScreenState extends State<CreateBarcodeScreen>
       setState(() {
         isLoading = false;
       });
+      // Save To Device
+      await _saveToDevice(_data, model).then((_result) {
+        if (_result != null) {
+          print("Result id: ${_result.id}");
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => GeneratedBarcodeScreen(
+                        barcode: widget.barcodeInfo.barcode,
+                        dataSet: {..._data, "id": _result.id},
+                        model: model,
+                      )));
+        } else {
+          print("Not Inserted..");
+          _snackBar("File not saved", true);
+        }
+      }).catchError((e) {
+        _snackBar("File not saved\n${e.message}", true);
+      });
+
       _resetToDefault();
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (_) => GeneratedBarcodeScreen(
-                    barcodeInfo: widget.barcodeInfo,
-                    dataSet: _data,
-                  )));
     } catch (e) {
       setState(() {
         isLoading = false;
@@ -104,6 +118,18 @@ class _CreateBarcodeScreenState extends State<CreateBarcodeScreen>
       }
       _snackBar("Invalid data", true);
     }
+  }
+
+  Future _saveToDevice(Map<String, dynamic> dataSet, MainModel model) async {
+    final BarcodeProvider _provider = BarcodeProvider(
+        barcode: widget.barcodeInfo.barcode,
+        data: dataSet['secret_data'],
+        barcodeType: widget.barcodeInfo.type,
+        fileName: dataSet['name'],
+        path: "",
+        QrType: "");
+
+    return await model.addBarcode(_provider);
   }
 
   void _snackBar(String message, bool error) {

@@ -6,9 +6,10 @@ import 'package:girixscanner/www/grixcode/com/scopedModel/main_model.dart';
 import 'package:girixscanner/www/grixcode/com/utils/enum/enum.dart';
 import 'package:girixscanner/www/grixcode/com/utils/theme/text_style.dart';
 import 'package:girixscanner/www/grixcode/com/views/barcodeScreen/generate/create_barcode.dart';
-import 'package:girixscanner/www/grixcode/com/views/barcodeScreen/generate/qr_code_type.dart';
 import 'package:girixscanner/www/grixcode/com/widgets/loader.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import 'file:///G:/PROJECT/Mine/MobileApp/girixscanner/lib/www/grixcode/com/views/qrCodeScreen/qr_code_type.dart';
 
 class BarcodeCategoryScreen extends StatefulWidget {
   final MainModel model;
@@ -34,15 +35,11 @@ class _BarcodeCategoryScreenState extends State<BarcodeCategoryScreen> {
 
   void _onTapCategory(BarcodeInfo barcodeInfo) {
     if (barcodeInfo.type == BarcodeType.QrCode) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (_) => QrCodeTypeScreen(
-                    barcodeInfo: barcodeInfo,
-                  )));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (_) => QrCodeTypeScreen()));
       return;
     }
-    Navigator.push(
+    Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (_) => CreateBarcodeScreen(

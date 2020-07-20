@@ -25,6 +25,17 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         drawer: AppDrawer(),
         appBar: AppBar(
+//          leading: Transform.rotate(
+//            angle: pi / 4,
+//            child: Container(
+//              decoration: BoxDecoration(color: Colors.black87),
+//              child: Icon(
+//                Icons.menu,
+//                color: Colors.white,
+//              ),
+//            ),
+//          ),
+//          backgroundColor: Colors.grey[50],
           title: Text("${_currentIndex == 0 ? APP_NAME : 'My Documents'}"),
           elevation: 0.0,
           centerTitle: true,

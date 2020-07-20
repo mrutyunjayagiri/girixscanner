@@ -1,11 +1,10 @@
 import 'dart:io';
 
+import 'package:barcode/barcode.dart';
 import 'package:flutter/material.dart';
 import 'package:girixscanner/www/grixcode/com/config/config.dart';
-import 'package:girixscanner/www/grixcode/com/models/barcode/barcode.dart';
 import 'package:girixscanner/www/grixcode/com/scopedModel/main_model.dart';
-import 'package:girixscanner/www/grixcode/com/utils/barcode/barcode.dart';
-import 'package:girixscanner/www/grixcode/com/utils/utility.dart';
+import 'package:girixscanner/www/grixcode/com/utils/helpers/barcode.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:permission_handler/permission_handler.dart';
@@ -13,10 +12,17 @@ import 'package:printing/printing.dart';
 
 class DownloadBarcode extends StatelessWidget {
   final Map<String, dynamic> dataSet;
-  final BarcodeInfo barcodeInfo;
+  final Barcode barcode;
   final MainModel model;
 
-  DownloadBarcode({this.dataSet, this.barcodeInfo, this.model});
+//  final Barcode barcode;
+//  final String fileName;
+//  final String secretData;
+//  final double width;
+//  final double height;
+//  final double fontSize
+
+  DownloadBarcode({this.dataSet, this.barcode, this.model});
 
   Widget _button(IconData icon, String text, VoidCallback onPressed) {
     return RaisedButton.icon(
@@ -32,7 +38,7 @@ class DownloadBarcode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!barcodeInfo.barcode.isValid(dataSet['secret_data'])) {
+    if (!barcode.isValid(dataSet['secret_data'])) {
       return const Text("Invalid Barcode data");
     }
 
@@ -77,7 +83,7 @@ class DownloadBarcode extends StatelessWidget {
   }
 
   Future<String> _getExternalPath() async {
-    return AppUtility.getExternalDocumentPath();
+    return BarcodeUtility().getExternalDocumentPath();
   }
 
   void _exportPdf(BuildContext context) async {
@@ -90,11 +96,10 @@ class DownloadBarcode extends StatelessWidget {
       return;
     }
 
-    final bc = barcodeInfo.barcode;
     final pdf = pw.Document(
       author: '${model.user.name}',
-      keywords: 'barcode, dart, ${barcodeInfo.barcode.name}',
-      subject: barcodeInfo.barcode.name,
+      keywords: 'barcode, dart, ${barcode.name}',
+      subject: barcode.name,
       title: '${dataSet['name']}',
     );
     const scale = 5.0;
@@ -115,7 +120,7 @@ class DownloadBarcode extends StatelessWidget {
                   fontSize: 35.0, color: PdfColor.fromHex("000000"))),
           pw.Spacer(),
           pw.BarcodeWidget(
-            barcode: bc,
+            barcode: barcode,
             data: dataSet['secret_data'],
             width: dataSet['width'] * PdfPageFormat.mm / scale,
             height: dataSet['height'] * PdfPageFormat.mm / scale,
@@ -124,7 +129,7 @@ class DownloadBarcode extends StatelessWidget {
             ),
           ),
           pw.Spacer(),
-          pw.Paragraph(text: barcodeInfo.description),
+          pw.Paragraph(text: dataSet['message']),
           pw.Spacer(),
           pw.Align(
             alignment: pw.Alignment.centerRight,
@@ -166,8 +171,7 @@ class DownloadBarcode extends StatelessWidget {
       return;
     }
 
-    final bc = barcodeInfo.barcode;
-    final data = await BarcodeUtility.getBarcodePng(bc, dataSet);
+    final data = await BarcodeUtility.getBarcodePng(barcode, dataSet);
     final _fileName = BarcodeUtility.fileName(dataSet['name']);
     final File _pngFile = File("${await _getExternalPath()}/$_fileName.png");
     await _pngFile.writeAsBytesSync(data, mode: FileMode.write);
@@ -175,7 +179,7 @@ class DownloadBarcode extends StatelessWidget {
 
 //    share(
 //      bytes: Uint8List.fromList(data),
-//      filename: '${bc.name}.png',
+//      filename: '${barcode.name}.png',
 //      mimetype: 'image/png',
 //    );
   }
@@ -189,9 +193,7 @@ class DownloadBarcode extends StatelessWidget {
       return;
     }
 
-    final bc = barcodeInfo.barcode;
-
-    final data = bc.toSvg(
+    final data = barcode.toSvg(
       dataSet['secret_data'],
       width: dataSet['width'],
       height: dataSet['height'],

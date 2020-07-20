@@ -2,20 +2,23 @@ import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:girixscanner/www/grixcode/com/config/config.dart';
-import 'package:girixscanner/www/grixcode/com/models/barcode/barcode.dart';
+import 'package:girixscanner/www/grixcode/com/models/barcode/barcode_provider_model.dart';
 import 'package:girixscanner/www/grixcode/com/scopedModel/main_model.dart';
-import 'package:girixscanner/www/grixcode/com/utils/barcode/barcode.dart';
+import 'package:girixscanner/www/grixcode/com/utils/dialog/dialog_handler.dart';
+import 'package:girixscanner/www/grixcode/com/utils/helpers/barcode.dart';
 import 'package:girixscanner/www/grixcode/com/utils/theme/text_style.dart';
-import 'package:girixscanner/www/grixcode/com/views/barcodeScreen/download.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:wc_flutter_share/wc_flutter_share.dart';
 
+import 'file:///G:/PROJECT/Mine/MobileApp/girixscanner/lib/www/grixcode/com/widgets/download.dart';
+
 class GeneratedBarcodeScreen extends StatefulWidget {
   final Map<String, dynamic> dataSet;
-  final BarcodeInfo barcodeInfo;
+  final Barcode barcode;
+  final MainModel model;
 
-  GeneratedBarcodeScreen({this.dataSet, this.barcodeInfo})
-      : assert(dataSet != null && barcodeInfo != null);
+  GeneratedBarcodeScreen({this.dataSet, this.barcode, this.model})
+      : assert(dataSet != null && barcode != null);
 
   @override
   _GeneratedBarcodeScreenState createState() => _GeneratedBarcodeScreenState();
@@ -42,7 +45,7 @@ class _GeneratedBarcodeScreenState extends State<GeneratedBarcodeScreen> {
                     ),
                     DownloadBarcode(
                       dataSet: widget.dataSet,
-                      barcodeInfo: widget.barcodeInfo,
+                      barcode: widget.barcode,
                       model: model,
                     ),
                   ],
@@ -73,14 +76,14 @@ class _GeneratedBarcodeScreenState extends State<GeneratedBarcodeScreen> {
 
   void _onBarcodeShare(BuildContext context) async {
     try {
-      final bc = widget.barcodeInfo.barcode;
+      final bc = widget.barcode;
       final data = await BarcodeUtility.getBarcodePng(bc, widget.dataSet);
       final _fileName = await BarcodeUtility.fileName(widget.dataSet['name']);
       await WcFlutterShare.share(
-        sharePopupTitle: '${widget.barcodeInfo.barcode.name} barcode',
+        sharePopupTitle: '${widget.barcode.name} barcode',
         subject: 'Barcode generation',
         text:
-            'I created ${widget.barcodeInfo.barcode.name} barcode with $APP_NAME. Take a look.',
+            'I created ${widget.barcode.name} barcode with $APP_NAME. Take a look.',
         fileName: '$_fileName.png',
         mimeType: 'image/png',
         bytesOfFile: data,
@@ -88,6 +91,62 @@ class _GeneratedBarcodeScreenState extends State<GeneratedBarcodeScreen> {
     } catch (e) {
       print('error: $e');
     }
+  }
+
+  void _onCreated() async {
+    final BarcodeProvider _provider = BarcodeProvider(
+        barcode: widget.barcode,
+        data: widget.dataSet['secret_data'],
+        barcodeType: null,
+        fileName: widget.dataSet['name'],
+        path: "",
+        QrType: "");
+
+    final BarcodeProvider _result = await widget.model.addBarcode(_provider);
+    if (_result != null) {
+      print("Result id: ${_result.id}");
+    } else {
+      print("Not Inserted..");
+    }
+  }
+
+  void _onDeleteBarcode() async {
+    DialogHandler.showMyCustomDialog(
+      context: context,
+      content: Text("Are you sure, you want to do this"),
+      titleText: "Delete ${widget.dataSet['name']}",
+      actions: <Widget>[
+        FlatButton(
+            onPressed: () => Navigator.of(context).pop(), child: Text("CLOSE")),
+        FlatButton(
+            onPressed: () async {
+              int result =
+                  await widget.model.deleteBarcode(widget.dataSet['id']);
+              if (result != 0) {
+                await widget.model.fetchAllBarcode();
+                _showSnack("", true);
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              }
+            },
+            child: Text("DELETE")),
+      ],
+    );
+  }
+
+  void _showSnack(String message, bool type) {}
+
+  @override
+  void initState() {
+    super.initState();
+
+//    _onCreated();
+  }
+
+  @override
+  void dispose() {
+    widget.model.disposeLoader();
+    super.dispose();
   }
 
   @override
@@ -101,7 +160,7 @@ class _GeneratedBarcodeScreenState extends State<GeneratedBarcodeScreen> {
         actions: <Widget>[
 //          IconButton(icon: Icon(Icons.share), onPressed: () => null),
 //          IconButton(icon: Icon(Icons.save), onPressed: () => onDownload()),
-          IconButton(icon: Icon(Icons.delete), onPressed: () => null),
+          IconButton(icon: Icon(Icons.delete), onPressed: _onDeleteBarcode),
           SizedBox(
             width: 12.0,
           ),
@@ -129,7 +188,7 @@ class _GeneratedBarcodeScreenState extends State<GeneratedBarcodeScreen> {
                     height: 10.0,
                   ),
                   Text(
-                    "Barcode Name: ${widget.barcodeInfo.barcode.name}",
+                    "Barcode Name: ${widget.barcode.name}",
                     style: CustomStyle(context)
                         .subtitle1
                         .apply(color: Colors.black87),
@@ -162,13 +221,13 @@ class _GeneratedBarcodeScreenState extends State<GeneratedBarcodeScreen> {
                         .apply(color: Colors.black87),
                   ),
                   SizedBox(
-                    height: 40.0,
+                    height: 10.0,
                   ),
                   Text(
-                    "Data: ${_dataSet['secret_data']}",
+                    " ${_dataSet['secret_data']}",
                     style: CustomStyle(context)
-                        .headline6
-                        .apply(color: Colors.black87),
+                        .subtitle1
+                        .apply(color: Colors.black87, fontWeightDelta: 1),
                   ),
                 ],
               ),
@@ -196,7 +255,7 @@ class _GeneratedBarcodeScreenState extends State<GeneratedBarcodeScreen> {
                   ),
                   Center(
                     child: BarcodeWidget(
-                      barcode: widget.barcodeInfo.barcode,
+                      barcode: widget.barcode,
                       data: _dataSet['secret_data'],
                       width: MediaQuery
                           .of(context)
