@@ -5,7 +5,7 @@ import 'package:image/image.dart' as im;
 
 class BarcodeUtility extends AppUtility {
   Future<String> getExternalDocumentPath() {
-    super.getExternalDocumentPath();
+    return super.getExternalDocumentPath();
   }
 
   static String fileName(String name) {
@@ -18,7 +18,7 @@ class BarcodeUtility extends AppUtility {
   static Future<List<int>> getBarcodePng(
       Barcode bc, Map<String, dynamic> dataSet) async {
     final image =
-    im.Image(dataSet['width'].toInt() * 2, dataSet['height'].toInt() * 2);
+        im.Image(dataSet['width'].toInt() * 2, dataSet['height'].toInt() * 2);
     im.fill(image, im.getColor(255, 255, 255));
     drawBarcode(image, bc, dataSet['secret_data'], font: im.arial_48);
     return im.encodePng(image);

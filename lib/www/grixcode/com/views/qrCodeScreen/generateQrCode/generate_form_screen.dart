@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:girixscanner/www/grixcode/com/utils/enum/enum.dart';
-import 'package:girixscanner/www/grixcode/com/views/qrCodeScreen/types/address_qr_code.dart';
+import 'package:girixscanner/www/grixcode/com/views/qrCodeScreen/types/contact_qr_code.dart';
 import 'package:girixscanner/www/grixcode/com/views/qrCodeScreen/types/email_qr_code.dart';
 import 'package:girixscanner/www/grixcode/com/views/qrCodeScreen/types/phone_qr_code.dart';
 import 'package:girixscanner/www/grixcode/com/views/qrCodeScreen/types/sms_qr_code.dart';
@@ -20,7 +20,7 @@ class GenerateQrCodeScreen extends StatelessWidget {
         return TextQrCode();
         break;
       case QrCodeType.ADDRESS:
-        return AddressQrCode();
+        return ContactQrCode();
         break;
       case QrCodeType.PHONE:
         return PhoneQrCode();
@@ -34,8 +34,8 @@ class GenerateQrCodeScreen extends StatelessWidget {
       case QrCodeType.SMS:
         return SMSQrCode();
         break;
-      case QrCodeType.LOCATION:
-        return AddressQrCode();
+      case QrCodeType.ALL:
+        return ContactQrCode();
         break;
       case QrCodeType.WIFI:
         return WiFiQrCode();

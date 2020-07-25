@@ -19,4 +19,5 @@ class QrTable {
   static final String colData = "data";
   static final String colQrType = "QrType";
   static final String colCreatedAt = "createdAt";
+  static final String colQrVersion = "qrVersion";
 }

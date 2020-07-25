@@ -7,10 +7,9 @@ import 'package:girixscanner/www/grixcode/com/scopedModel/main_model.dart';
 import 'package:girixscanner/www/grixcode/com/utils/dialog/dialog_handler.dart';
 import 'package:girixscanner/www/grixcode/com/utils/helpers/barcode.dart';
 import 'package:girixscanner/www/grixcode/com/utils/theme/text_style.dart';
+import 'package:girixscanner/www/grixcode/com/widgets/download.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:wc_flutter_share/wc_flutter_share.dart';
-
-import 'file:///G:/PROJECT/Mine/MobileApp/girixscanner/lib/www/grixcode/com/widgets/download.dart';
 
 class GeneratedBarcodeScreen extends StatefulWidget {
   final Map<String, dynamic> dataSet;
@@ -35,20 +34,11 @@ class _GeneratedBarcodeScreenState extends State<GeneratedBarcodeScreen> {
             builder: (_, __, MainModel model) {
               return Container(
                 padding: EdgeInsets.all(15.0),
-                height: 150.0,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      "Save as",
-                      style: CustomStyle(context).subtitle1,
-                    ),
-                    DownloadBarcode(
-                      dataSet: widget.dataSet,
-                      barcode: widget.barcode,
-                      model: model,
-                    ),
-                  ],
+                height: 300.0,
+                child: DownloadBarcode(
+                  dataSet: widget.dataSet,
+                  barcode: widget.barcode,
+                  model: model,
                 ),
               );
             },
@@ -257,10 +247,7 @@ class _GeneratedBarcodeScreenState extends State<GeneratedBarcodeScreen> {
                     child: BarcodeWidget(
                       barcode: widget.barcode,
                       data: _dataSet['secret_data'],
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width,
+                      width: MediaQuery.of(context).size.width,
                       height: 120.0,
                       style: TextStyle(fontSize: _dataSet['font']),
                       errorBuilder: (BuildContext context, String error) {

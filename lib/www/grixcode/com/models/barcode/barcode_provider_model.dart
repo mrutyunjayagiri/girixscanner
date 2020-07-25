@@ -33,10 +33,9 @@ class BarcodeProvider {
     this.createdAt = DateTime.parse(data[BarcodeTable.colCreatedAt]);
   }
 
-  BarcodeType _getType(String type) =>
-      barcodeTypeValues.firstWhere(
-              (BarcodeType _type) => _type.toString() == type,
-          orElse: null);
+  BarcodeType _getType(String type) => barcodeTypeValues.firstWhere(
+      (BarcodeType _type) => _type.toString() == type,
+      orElse: null);
 
   Barcode _getBarcode(String type) {
     print("Barcode Type: $type}");

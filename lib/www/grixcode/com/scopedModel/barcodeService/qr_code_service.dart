@@ -1,14 +1,40 @@
+import 'package:girixscanner/www/grixcode/com/models/barcode/barcode_item.dart';
 import 'package:girixscanner/www/grixcode/com/models/barcode/qr_code_provider.dart';
 import 'package:girixscanner/www/grixcode/com/scopedModel/connected_model.dart';
 
 class QrCodeService extends ConnectedModel {
-  Future<List<QrCodeProvider>> fetchAllQrcode() async {
+  Future<List<QrCodeProvider>> fetchQrCode() async {
     isLoading = true;
     notifyListeners();
+
     qrCodeProviders.clear();
-    List<QrCodeProvider> _items = await databaseHelper.fetchAllQrcodes();
+    final List<QrCodeProvider> _items = await databaseHelper.fetchAllQrcodes();
+//    await Future.delayed(Duration(seconds: 2));
     if (_items != null) {
-      qrCodeProviders = _items;
+//      final _barcodeItem = _items.reversed.toList();
+
+      final String _today = DateTime.now().toString().split(' ')[0];
+      final List _checker = List();
+
+      _items.forEach((element) {
+        final String _createdDate = element.createdAt.toString().split(' ')[0];
+//        print("Created: $_createdDate");
+
+        if (!_checker.contains(_createdDate)) {
+          if (_today == _createdDate) {
+            _checker.add(_createdDate);
+            qrCodeProviders.add(
+                BarcodeHeader(dateText: "Today", dateTime: element.createdAt));
+          } else {
+            _checker.add(_createdDate);
+            qrCodeProviders.add(BarcodeHeader(
+                dateText: "$_createdDate", dateTime: element.createdAt));
+          }
+          qrCodeProviders.add(element);
+        } else {
+          qrCodeProviders.add(element);
+        }
+      });
     }
     isLoading = false;
     notifyListeners();
@@ -19,7 +45,9 @@ class QrCodeService extends ConnectedModel {
     isLoading = true;
     notifyListeners();
     QrCodeProvider _item = await databaseHelper.insertQrcode(provider);
-    qrCodeProviders.add(_item);
+    if (_item != null) {
+      fetchQrCode();
+    }
     isLoading = false;
     notifyListeners();
     return _item;

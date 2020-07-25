@@ -21,7 +21,8 @@ class QrCodeHelper {
   }
 
   static Future<List<QrCodeProvider>> fetchAll(Database database) async {
-    List<Map> maps = await database.query(QrTable.tableName);
+    List<Map> maps = await database.query(QrTable.tableName,
+        orderBy: "${QrTable.colId} DESC");
     if (maps.length > 0) {
 //      print("Barcodes From Database: $maps");
       return maps.map((e) => QrCodeProvider.fromSqlFliteMap(e)).toList();

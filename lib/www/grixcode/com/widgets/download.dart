@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:girixscanner/www/grixcode/com/config/config.dart';
 import 'package:girixscanner/www/grixcode/com/scopedModel/main_model.dart';
 import 'package:girixscanner/www/grixcode/com/utils/helpers/barcode.dart';
+import 'package:girixscanner/www/grixcode/com/utils/theme/text_style.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:permission_handler/permission_handler.dart';
@@ -24,44 +25,65 @@ class DownloadBarcode extends StatelessWidget {
 
   DownloadBarcode({this.dataSet, this.barcode, this.model});
 
-  Widget _button(IconData icon, String text, VoidCallback onPressed) {
-    return RaisedButton.icon(
-        padding: EdgeInsets.all(12.0),
-        elevation: 0.0,
-        icon: Icon(icon),
-        color: Colors.grey[200],
-        shape:
-            OutlineInputBorder(borderSide: BorderSide(color: Colors.black12)),
-        label: Text(text),
-        onPressed: onPressed);
-  }
-
   @override
   Widget build(BuildContext context) {
     if (!barcode.isValid(dataSet['secret_data'])) {
       return const Text("Invalid Barcode data");
     }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      child: Row(
+    final doubleIconSize = 30.0;
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Expanded(
-              child: _button(
-                  Icons.file_download, 'SVG', () => _exportSvg(context))),
-          const SizedBox(
-            width: 5,
+          ListTile(
+            title: Text(
+              "Save as",
+              style: CustomStyle(context).bodyText2,
+            ),
           ),
-          Expanded(
-              child: _button(
-                  Icons.file_download, 'PNG', () => _exportPng(context))),
-          const SizedBox(
-            width: 5,
+          ListTile(
+            leading: Icon(
+              Icons.save_alt,
+              size: doubleIconSize,
+              color: Colors.green,
+            ),
+            title: Text(
+              "SVG",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            onTap: () => _exportSvg(context),
+            subtitle: Text("Download as SVG"),
+            dense: true,
           ),
-          Expanded(
-              child: _button(
-                  Icons.file_download, 'PDF', () => _exportPdf(context))),
+          ListTile(
+            leading: Icon(
+              Icons.image,
+              size: doubleIconSize,
+              color: Theme.of(context).primaryColor,
+            ),
+            title: Text(
+              "PNG",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            onTap: () => _exportPng(context),
+            subtitle: Text("Download as PNG"),
+            dense: true,
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.picture_as_pdf,
+              size: doubleIconSize,
+              color: Colors.pink,
+            ),
+            subtitle: Text("Download as PDF"),
+            dense: true,
+            title: Text(
+              "PDF",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            onTap: () => _exportPdf(context),
+          ),
         ],
       ),
     );
@@ -112,15 +134,21 @@ class DownloadBarcode extends StatelessWidget {
     pdf.addPage(pw.Page(
       build: (context) => pw.Center(
         child: pw.Column(children: [
-          pw.Row(children: [pw.Image(assetImage, height: 50, width: 90)]),
+          pw.Row(children: [pw.Image(assetImage, height: 30, width: 60)]),
 //          pw.Header(text: APP_NAME, level: 3),
           pw.Spacer(),
           pw.Text("Data: ${dataSet['secret_data']}",
               style: pw.TextStyle(
-                  fontSize: 35.0, color: PdfColor.fromHex("000000"))),
+                  fontSize: 18.0, color: PdfColor.fromHex("000000"))),
           pw.Spacer(),
           pw.BarcodeWidget(
             barcode: barcode,
+            backgroundColor: dataSet['background_color'] != null
+                ? PdfColor.fromHex("${dataSet['background_color']['hex']}")
+                : null,
+            color: dataSet['foreground_color'] != null
+                ? PdfColor.fromHex("#${dataSet['foreground_color']['hex']}")
+                : null,
             data: dataSet['secret_data'],
             width: dataSet['width'] * PdfPageFormat.mm / scale,
             height: dataSet['height'] * PdfPageFormat.mm / scale,

@@ -139,18 +139,16 @@ class _BarcodeScreenState extends State<BarcodeScreen> {
               padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               label: Text("Generate Barcode"),
               textColor: Colors.white,
-        elevation: 20.0,
-        icon: Icon(
-          Icons.add,
-          size: 35.0,
-        ),
-        color: Theme
-            .of(context)
-            .primaryColor,
-        onPressed: () => _onGenerateTap(),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(35.0)),
-      ),
+              elevation: 20.0,
+              icon: Icon(
+                Icons.add,
+                size: 35.0,
+              ),
+              color: Theme.of(context).primaryColor,
+              onPressed: () => _onGenerateTap(),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(35.0)),
+            ),
     );
   }
 }

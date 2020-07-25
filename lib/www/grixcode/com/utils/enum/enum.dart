@@ -26,6 +26,8 @@ enum BarcodeTypeEnum {
 enum BarcodeCategory { OneD, TwoD }
 
 enum QrCodeType {
+  PLAYGROUND,
+  ALL,
   WIFI,
   URL,
   TEXT,
