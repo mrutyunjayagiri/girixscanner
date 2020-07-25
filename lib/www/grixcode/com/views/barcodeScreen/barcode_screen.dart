@@ -163,41 +163,41 @@ class BarcodeProviderTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              height: 70.0,
-              width: 70.0,
-              child: Card(
-                  child: Container(
-                    margin: EdgeInsets.all(8),
-                    child: BarcodeWidget(
-                      barcode: barcodeProvider.barcode,
-                      data: barcodeProvider.data,
-                      style: TextStyle(fontSize: 10.0),
-                      errorBuilder: (BuildContext context, String error) {
-                        return Text("Failed to load barcode: $error");
-                      },
-                    ),
-                  )),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          height: 70.0,
+          width: 70.0,
+          child: Card(
+              child: Container(
+            margin: EdgeInsets.all(8),
+            child: BarcodeWidget(
+              barcode: barcodeProvider.barcode,
+              data: barcodeProvider.data,
+              style: TextStyle(fontSize: 10.0),
+              errorBuilder: (BuildContext context, String error) {
+                return Text("Failed to load barcode: $error");
+              },
             ),
-            Expanded(
-                child: Container(
-                  height: 70.0,
-                  child: ListTile(
-                    onTap: onTap,
-                    title: Text(
-                      "${barcodeProvider.fileName}",
-                      style: CustomStyle(context).subtitle1,
-                    ),
-                    subtitle: Text(
-                      "${barcodeProvider.data}",
-                      style: CustomStyle(context).caption,
-                    ),
-                  ),
-                ))
-          ],
-        ));
+          )),
+        ),
+        Expanded(
+            child: Container(
+          height: 70.0,
+          child: ListTile(
+            onTap: onTap,
+            title: Text(
+              "${barcodeProvider.fileName}",
+              style: CustomStyle(context).subtitle1,
+            ),
+            subtitle: Text(
+              "${barcodeProvider.data}",
+              style: CustomStyle(context).caption,
+            ),
+          ),
+        ))
+      ],
+    ));
   }
 }

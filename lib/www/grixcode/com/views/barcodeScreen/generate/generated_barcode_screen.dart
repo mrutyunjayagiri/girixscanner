@@ -277,9 +277,7 @@ class _GeneratedBarcodeScreenState extends State<GeneratedBarcodeScreen> {
                         borderSide: BorderSide(color: Colors.black26)),
                     onPressed: () => onDownload(),
                     child: Text("SAVE"),
-                    textColor: Theme
-                        .of(context)
-                        .primaryColor,
+                    textColor: Theme.of(context).primaryColor,
                     padding: EdgeInsets.all(16.0),
                   ),
                 ),
