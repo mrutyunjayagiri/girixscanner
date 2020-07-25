@@ -5,6 +5,7 @@ import 'package:barcode/barcode.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:girixscanner/www/grixcode/com/config/config.dart';
 import 'package:girixscanner/www/grixcode/com/models/barcode/qr_code_provider.dart';
 import 'package:girixscanner/www/grixcode/com/scopedModel/main_model.dart';
 import 'package:girixscanner/www/grixcode/com/utils/enum/enum.dart';
@@ -17,6 +18,7 @@ import 'package:girixscanner/www/grixcode/com/widgets/animation/my_animation.dar
 import 'package:girixscanner/www/grixcode/com/widgets/download.dart';
 import 'package:girixscanner/www/grixcode/com/widgets/image_picker.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:wc_flutter_share/wc_flutter_share.dart';
 
 class QrCodePlayGround extends StatefulWidget {
   final MainModel model;
@@ -30,9 +32,9 @@ class QrCodePlayGround extends StatefulWidget {
 class _QrCodePlayGroundState extends State<QrCodePlayGround> {
   final TextEditingController _textEditingController = TextEditingController();
 
-  Color _foregroundColor = primaryColor;
+  Color _foregroundColor = Colors.deepPurple[900];
   Color _backgroundColor = Colors.grey[200];
-  int _qrVersion = 1;
+  int _qrVersion = -1;
   String _dataText = "";
 
   File _logoFile;
@@ -49,10 +51,12 @@ class _QrCodePlayGroundState extends State<QrCodePlayGround> {
 
   void _onSaveExportTap(BuildContext buildContext) async {
     final QrCodeProvider _provider = QrCodeProvider(
-        fileName: _textEditingController.text,
+        fileName: dataSet['name'],
         id: null,
         data: _dataText.toString(),
-        barcode: Barcode.qrCode(typeNumber: _qrVersion),
+        barcode: Barcode.qrCode(typeNumber: _qrVersion == -1 ? 1 : _qrVersion),
+        background: _backgroundColor,
+        foreground: _foregroundColor,
         createdAt: DateTime.now(),
         qrVersion: _qrVersion,
         qrCodeType: QrCodeType.PLAYGROUND);
@@ -78,28 +82,47 @@ class _QrCodePlayGroundState extends State<QrCodePlayGround> {
     ));
   }
 
+  Future<void> onBarcodeShare() async {
+    try {
+      final bc = Barcode.qrCode(typeNumber: _qrVersion);
+      final data = await BarcodeUtility.getBarcodePng(bc, dataSet);
+      final _fileName = await BarcodeUtility.fileName(dataSet['name']);
+      await WcFlutterShare.share(
+        sharePopupTitle: '${bc.name} qrcode',
+        subject: 'My QrCode',
+        text: 'I created ${bc.name} with $APP_NAME. Take a look.',
+        fileName: '$_fileName.png',
+        mimeType: 'image/png',
+        bytesOfFile: data,
+      );
+    } catch (e) {
+      print('error: $e');
+    }
+  }
+
+  Map<String, dynamic> get dataSet => {
+        "name": BarcodeUtility.fileName(_textEditingController.text.isEmpty
+            ? Random().nextInt(1500).toString()
+            : _textEditingController.text),
+        "font": _fontSize,
+        "height": _height,
+        "width": _width,
+        "message": _message,
+        "background_color": {
+          "color": _backgroundColor,
+          "hex": getHex(_backgroundColor),
+        },
+        "foreground_color": {
+          "color": _foregroundColor,
+          "hex": getHex(_foregroundColor),
+        },
+        "image_path": _logoFile == null ? "" : _logoFile.path,
+        "secret_data": _textEditingController.text
+      };
+
   void _openSaveModal(BuildContext buildContext) async {
     print(getHex(_backgroundColor));
 
-    final _dataSet = {
-      "name": BarcodeUtility.fileName(_textEditingController.text.isEmpty
-          ? Random().nextInt(1500).toString()
-          : _textEditingController.text),
-      "font": _fontSize,
-      "height": _height,
-      "width": _width,
-      "message": _message,
-      "background_color": {
-        "color": _backgroundColor,
-        "hex": getHex(_backgroundColor),
-      },
-      "foreground_color": {
-        "color": _foregroundColor,
-        "hex": getHex(_foregroundColor),
-      },
-      "image_path": _logoFile == null ? "" : _logoFile.path,
-      "secret_data": _textEditingController.text
-    };
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
@@ -107,16 +130,18 @@ class _QrCodePlayGroundState extends State<QrCodePlayGround> {
             height: 300.0,
             width: MediaQuery.of(context).size.width,
             child: DownloadBarcode(
-              barcode: Barcode.qrCode(typeNumber: _qrVersion),
+              barcode:
+                  Barcode.qrCode(typeNumber: _qrVersion == -1 ? 1 : _qrVersion),
               model: widget.model,
-              dataSet: _dataSet,
+              dataSet: dataSet,
             ),
           );
         }).then((value) {
-      if (value) {
-        _showSnacks(buildContext, "File saved successfully", false);
-      } else {
+      if (value == null) return;
+      if (!value) {
         _showSnacks(buildContext, "Unable to save", true);
+      } else {
+        _showSnacks(buildContext, "File saved successfully", false);
       }
     }).catchError(
         (onError) => _showSnacks(buildContext, onError.toString(), true));
@@ -135,7 +160,7 @@ class _QrCodePlayGroundState extends State<QrCodePlayGround> {
     double _fontSize = 0.0;
     String _message = "";
 
-    _foregroundColor = primaryColor;
+    _foregroundColor = Colors.deepPurple[900];
     _backgroundColor = Colors.grey[200];
     _qrVersion = 1;
     _dataText = "Play Ground";
@@ -145,6 +170,10 @@ class _QrCodePlayGroundState extends State<QrCodePlayGround> {
   }
 
   void _onVersionChange(double value) {
+    print("data Text Length: ${_dataText.length}");
+    if (value.toInt() == 1) return;
+
+    /// There is Bug While Version is set To 1;
     setState(() {
       _qrVersion = value.toInt();
     });
@@ -159,9 +188,6 @@ class _QrCodePlayGroundState extends State<QrCodePlayGround> {
                 setState(() {
                   if (type == "Foreground") {
                     _foregroundColor = color;
-                    print("Color Value: ${_foregroundColor.value}");
-                    print(
-                        "Color ToString: ${_foregroundColor.toString().split('ff')}");
                   } else {
                     _backgroundColor = color;
                   }
@@ -174,6 +200,7 @@ class _QrCodePlayGroundState extends State<QrCodePlayGround> {
     setState(() {
       _dataText = value;
     });
+    print("data Text Length: ${_dataText.length}");
   }
 
   void onLogoTap() async {
@@ -304,7 +331,7 @@ class _QrCodePlayGroundState extends State<QrCodePlayGround> {
             label: "$_qrVersion",
             divisions: 20,
             max: 40,
-            min: 1,
+            min: -1,
           ),
         ));
   }
@@ -326,14 +353,13 @@ class _QrCodePlayGroundState extends State<QrCodePlayGround> {
                 foregroundColor: _foregroundColor,
                 data: "$_dataText",
                 version: _qrVersion,
-                size: MediaQuery.of(context).size.width,
                 gapless: false,
                 embeddedImage: _logoFile == null ? null : FileImage(_logoFile),
                 errorStateBuilder: (cxt, err) {
                   return Container(
                     child: Center(
                       child: Text(
-                        "Uh oh! Something went wrong...",
+                        "${err.toString()}",
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -352,77 +378,72 @@ class _QrCodePlayGroundState extends State<QrCodePlayGround> {
   Widget build(BuildContext context) {
 //    SystemConfig.setStatusBarColor(Colors.red);
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: primaryColor,
-      ),
-      child: SafeArea(
-        top: true,
-        child: Scaffold(
-          appBar: AppBar(
-            elevation: 0.0,
-            leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                color: Colors.black87,
-                onPressed: () => Navigator.of(context).pop()),
-            title: Text(
-              "Qr Playground",
-              style: CustomStyle(context).headline6,
+    return SafeArea(
+      top: true,
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0.0,
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              color: Colors.black87,
+              onPressed: () => Navigator.of(context).pop()),
+          title: Text(
+            "Qr Playground",
+            style: CustomStyle(context).headline6,
+          ),
+          backgroundColor: Colors.grey[100],
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.share),
+              onPressed: () => onBarcodeShare(),
+              color: Colors.black87,
             ),
-            backgroundColor: Colors.grey[100],
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.share),
-                onPressed: () => null,
-                color: Colors.black87,
+            IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () => _reset(),
+              color: Colors.black87,
+            ),
+            SizedBox(
+              width: 12.0,
+            )
+          ],
+        ),
+//          backgroundColor: Colors.grey[100],
+        body: Container(
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: ListView(
+                  children: <Widget>[
+                    _buildQrImage(),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    _buildText(),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    _buildColor(),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    _buildVersion(),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    _buildFile(),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    _buildSizeFields(),
+                  ],
+                ),
               ),
-              IconButton(
-                icon: Icon(Icons.refresh),
-                onPressed: () => _reset(),
-                color: Colors.black87,
-              ),
-              SizedBox(
-                width: 12.0,
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: _buildBtn(),
               )
             ],
-          ),
-//          backgroundColor: Colors.grey[100],
-          body: Container(
-            child: Column(
-              children: <Widget>[
-                Expanded(
-                  child: ListView(
-                    children: <Widget>[
-                      _buildQrImage(),
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                      _buildText(),
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                      _buildColor(),
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                      _buildVersion(),
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                      _buildFile(),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      _buildSizeFields(),
-                    ],
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: _buildBtn(),
-                )
-              ],
-            ),
           ),
         ),
       ),

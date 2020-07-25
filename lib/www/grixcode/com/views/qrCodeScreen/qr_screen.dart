@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:girixscanner/www/grixcode/com/models/barcode/barcode_item.dart';
 import 'package:girixscanner/www/grixcode/com/models/barcode/qr_code_provider.dart';
 import 'package:girixscanner/www/grixcode/com/models/data/shared_data.dart';
@@ -8,9 +7,11 @@ import 'package:girixscanner/www/grixcode/com/utils/enum/enum.dart';
 import 'package:girixscanner/www/grixcode/com/utils/theme/text_style.dart';
 import 'package:girixscanner/www/grixcode/com/views/qrCodeScreen/qr_code_type.dart';
 import 'package:girixscanner/www/grixcode/com/views/qrCodeScreen/qrcode_builder.dart';
+import 'package:girixscanner/www/grixcode/com/views/qrCodeScreen/qrcode_detail_screen.dart';
 import 'package:girixscanner/www/grixcode/com/views/scannerScreen/scanner_button.dart';
 import 'package:girixscanner/www/grixcode/com/widgets/error/error.dart';
 import 'package:girixscanner/www/grixcode/com/widgets/loader.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class QrCodeScreen extends StatefulWidget {
@@ -34,6 +35,17 @@ class _QrScreenState extends State<QrCodeScreen> {
 
   Future<void> _onCreated() async {
     final qrItems = await widget.model.fetchQrCode();
+  }
+
+  void onLeadingTap(QrCodeProvider item) {
+    _moveToDetail(item);
+  }
+
+  void _moveToDetail(QrCodeProvider item) {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => QrCodeDetailScreen(
+              provider: item,
+            )));
   }
 
   @override
@@ -86,6 +98,7 @@ class _QrScreenState extends State<QrCodeScreen> {
                                     } else if (item is QrCodeProvider) {
                                       return QrCodeTile(
                                         provider: item,
+                                        onTap: () => _moveToDetail(item),
                                       );
                                     } else {
                                       return Container();
@@ -118,20 +131,41 @@ class _QrScreenState extends State<QrCodeScreen> {
 
 class QrCodeTile extends StatelessWidget {
   final QrCodeProvider provider;
+  final Function onTap;
 
-  const QrCodeTile({Key key, this.provider}) : super(key: key);
+  const QrCodeTile({Key key, this.provider, this.onTap}) : super(key: key);
 
-  Map<String, dynamic> get categoryMap => qrCodeCategories
-      .firstWhere((Map map) => map['type'] == provider.qrCodeType);
+  Map<String, dynamic> get categoryMap =>
+      qrCodeCategories
+          .firstWhere((Map map) => map['type'] == provider.qrCodeType);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: FaIcon(
-        categoryMap['icon'],
-        color: Colors.black54,
-        size: 21.0,
+      onTap: onTap,
+      leading: Hero(
+        tag: provider,
+        child: CircleAvatar(
+          child: QrImage(
+            data: "${provider.data}",
+            backgroundColor: provider.background,
+            foregroundColor: provider.foreground,
+            errorStateBuilder: (context, err) =>
+                Text(
+                  "Failed",
+                  style: CustomStyle.errorStyle,
+                ),
+          ),
+        ),
       ),
+//          : CircleAvatar(
+//              backgroundColor: Colors.grey[300],
+//              child: FaIcon(
+//                categoryMap['icon'],
+//                color: Colors.black54,
+//                size: 21.0,
+//              ),
+//            ),
       title: Text(
         "${provider.fileName}",
         style: CustomStyle(context)

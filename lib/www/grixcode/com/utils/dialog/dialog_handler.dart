@@ -52,7 +52,7 @@ class DialogHandler {
                 child: Container(
                   child: content,
                   width: MediaQuery.of(context).size.width * 0.7,
-                  height: 410.0,
+                  height: 310.0,
                 )),
           );
         });

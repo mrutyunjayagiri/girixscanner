@@ -57,9 +57,12 @@ class QrCodeService extends ConnectedModel {
     isLoading = true;
     notifyListeners();
     int result = await databaseHelper.deleteQrcode(id);
-
-    isLoading = false;
-    notifyListeners();
+    if (result != 0) {
+      print("Deleted");
+      fetchQrCode();
+    }
+//    isLoading = false;
+//    notifyListeners();
     return result;
   }
 }

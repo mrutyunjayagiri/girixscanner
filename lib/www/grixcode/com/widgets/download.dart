@@ -6,6 +6,7 @@ import 'package:girixscanner/www/grixcode/com/config/config.dart';
 import 'package:girixscanner/www/grixcode/com/scopedModel/main_model.dart';
 import 'package:girixscanner/www/grixcode/com/utils/helpers/barcode.dart';
 import 'package:girixscanner/www/grixcode/com/utils/theme/text_style.dart';
+import 'package:image/image.dart' as im;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:permission_handler/permission_handler.dart';
@@ -220,17 +221,33 @@ class DownloadBarcode extends StatelessWidget {
       Navigator.of(context).pop(false);
       return;
     }
-
+    int backColor = im.getColor(255, 255, 255);
+    int foreColor = im.getColor(0, 0, 0);
+    Color foreground, _background;
+    if (dataSet['foreground_color'] != null) {
+      foreground = dataSet['foreground_color']['color'];
+      foreColor =
+          im.getColor(foreground.red, foreground.green, foreground.blue);
+    }
+    if (dataSet['background_color'] != null) {
+      _background = dataSet['background_color']['color'];
+      backColor =
+          im.getColor(_background.red, _background.green, _background.blue);
+    }
     final data = barcode.toSvg(
       dataSet['secret_data'],
       width: dataSet['width'],
       height: dataSet['height'],
       fontHeight: dataSet['font'],
+      color: foreColor,
     );
     final _fileName = BarcodeUtility.fileName(dataSet['name']);
 
     final File svgFile = File("${await _getExternalPath()}/$_fileName.svg");
-    await svgFile.writeAsStringSync(data, mode: FileMode.write);
+    await svgFile.writeAsStringSync(
+      data,
+      mode: FileMode.write,
+    );
     Navigator.of(context).pop(true);
   }
 }

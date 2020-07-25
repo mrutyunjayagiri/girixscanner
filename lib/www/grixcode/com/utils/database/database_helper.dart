@@ -76,7 +76,10 @@ create table ${QrTable.tableName} (
   ${QrTable.colData} text not null,
   ${QrTable.colQrType} text not null,
   ${QrTable.colCreatedAt} text not null,
-  ${QrTable.colQrVersion} integer not null
+  ${QrTable.colQrVersion} integer not null,
+  ${QrTable.colForegroundColor} text,
+  ${QrTable.colBackgroundColor} text
+
   
   )
 ''');

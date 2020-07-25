@@ -103,7 +103,7 @@ class _GeneratedBarcodeScreenState extends State<GeneratedBarcodeScreen> {
   void _onDeleteBarcode() async {
     DialogHandler.showMyCustomDialog(
       context: context,
-      content: Text("Are you sure, you want to do this"),
+      content: Text("Are you sure, you want to do this?"),
       titleText: "Delete ${widget.dataSet['name']}",
       actions: <Widget>[
         FlatButton(

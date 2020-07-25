@@ -20,4 +20,7 @@ class QrTable {
   static final String colQrType = "QrType";
   static final String colCreatedAt = "createdAt";
   static final String colQrVersion = "qrVersion";
+
+  static final String colForegroundColor = "foregroundColor";
+  static final String colBackgroundColor = "backgroundColor";
 }
