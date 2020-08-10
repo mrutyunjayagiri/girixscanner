@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:girixscanner/www/grixcode/com/config/config.dart';
 import 'package:girixscanner/www/grixcode/com/scopedModel/main_model.dart';
+import 'package:girixscanner/www/grixcode/com/views/documentViews/my_documnets.dart';
+import 'package:girixscanner/www/grixcode/com/views/documentViews/scan/scan_screen.dart';
 import 'package:girixscanner/www/grixcode/com/views/homeScreen/dashboard_views.dart';
-import 'package:girixscanner/www/grixcode/com/views/homeScreen/my_documnets.dart';
 import 'package:girixscanner/www/grixcode/com/widgets/bottom_nav_bar.dart';
 import 'package:girixscanner/www/grixcode/com/widgets/drawer.dart';
 
@@ -17,6 +18,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+
+  void _onFloatingAction() async {
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => ScanScreen(model: widget.model)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +55,21 @@ class _HomeScreenState extends State<HomeScreen> {
               _currentIndex = index;
             });
           },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: Container(
+          height: 60,
+          width: 60,
+          child: FloatingActionButton(
+            onPressed: _onFloatingAction,
+            child: Icon(
+              Icons.camera,
+              size: 30.0,
+            ),
+            elevation: 23.0,
+            heroTag: "SCAN_DOCS",
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
         ),
       ),
     );

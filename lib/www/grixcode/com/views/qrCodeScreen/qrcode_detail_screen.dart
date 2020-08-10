@@ -72,7 +72,8 @@ class QrCodeDetailScreen extends StatelessWidget {
                 height: 300.0,
                 child: DownloadBarcode(
                   dataSet: dataSet,
-                  barcode: Barcode.qrCode(typeNumber: provider.qrVersion),
+//                  barcode: Barcode.qrCode(typeNumber: provider.qrVersion),
+                  barcode: Barcode.qrCode(),
                   model: model,
                 ),
               );
@@ -111,7 +112,8 @@ class QrCodeDetailScreen extends StatelessWidget {
 
   Future<void> onBarcodeShare(BuildContext context) async {
     try {
-      final bc = Barcode.qrCode(typeNumber: provider.qrVersion);
+      print("Version: ${provider.qrVersion}");
+      final bc = Barcode.qrCode();
       final data = await BarcodeUtility.getBarcodePng(bc, dataSet);
       final _fileName = await BarcodeUtility.fileName(dataSet['name']);
       await WcFlutterShare.share(

@@ -293,9 +293,7 @@ class _GeneratedBarcodeScreenState extends State<GeneratedBarcodeScreen> {
                             end: Alignment.centerRight,
                             colors: [
                               Colors.deepPurpleAccent,
-                              Theme
-                                  .of(context)
-                                  .primaryColor,
+                              Theme.of(context).primaryColor,
                             ])),
                     child: MaterialButton(
                       elevation: 0.0,

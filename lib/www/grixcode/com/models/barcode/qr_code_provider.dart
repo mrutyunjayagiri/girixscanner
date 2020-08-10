@@ -33,8 +33,9 @@ class QrCodeProvider extends BarcodeItem {
     this.data = data[QrTable.colData];
     this.id = data[QrTable.colId];
     this.qrVersion = data[QrTable.colQrVersion] ?? 1;
-    this.barcode =
-        Barcode.qrCode(typeNumber: this.qrVersion == -1 ? 2 : this.qrVersion);
+    this.barcode = Barcode.qrCode(
+        typeNumber:
+            this.qrVersion == -1 || this.qrVersion == 1 ? 2 : this.qrVersion);
     this.qrCodeType = _getType(data[QrTable.colQrType]);
     this.createdAt = DateTime.parse(data[QrTable.colCreatedAt]);
     this.foreground = data[QrTable.colForegroundColor] == null
@@ -56,7 +57,9 @@ class QrCodeProvider extends BarcodeItem {
     _dataSet[QrTable.colQrType] = this.qrCodeType.toString();
     _dataSet[QrTable.colCreatedAt] = DateTime.now().toString();
     _dataSet[QrTable.colQrVersion] =
-    this.qrVersion == null || this.qrVersion == -1 ? 2 : this.qrVersion;
+    this.qrVersion == null || this.qrVersion == -1 || this.qrVersion == 1
+        ? 2
+        : this.qrVersion;
 
     _dataSet[QrTable.colForegroundColor] =
     this.foreground == null ? null : _convertColorToRGBStr(this.foreground);
@@ -71,10 +74,13 @@ class QrCodeProvider extends BarcodeItem {
   }
 
   Color _convertRGBToColor(String rgbColor) {
+//    print("Rgb String: $rgbColor");
     final _splitStr = rgbColor.split('|');
-    int _r = int.parse(_splitStr[0]);
+//    print("_splitStr String: $_splitStr");
+// It's matching color when it reverses index;
+    int _r = int.parse(_splitStr[2]);
     int _g = int.parse(_splitStr[1]);
-    int _b = int.parse(_splitStr[2]);
+    int _b = int.parse(_splitStr[0]);
     int color = im.getColor(_r, _g, _b);
     return Color(color);
   }

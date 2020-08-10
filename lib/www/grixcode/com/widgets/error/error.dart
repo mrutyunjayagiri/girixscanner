@@ -28,6 +28,8 @@ class ErrorView extends StatelessWidget {
       return "No data found";
     } else if (errorType == ErrorResponse.ERROR) {
       return "Internal error";
+    } else if (errorType == ErrorResponse.NOT_PERMITTED) {
+      return "Permission required";
     } else {
       return "Unable to fetch";
     }
@@ -49,7 +51,7 @@ class ErrorView extends StatelessWidget {
             height: 25.0,
           ),
           Text(
-            "${_title}",
+            "${title ?? _title}",
             style: CustomStyle(context).headline6,
           ),
           SizedBox(

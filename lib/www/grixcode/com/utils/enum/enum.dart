@@ -1,5 +1,5 @@
 enum DocumentType { FILE, PDF, BARCODE, IMAGE, QR_CODE, XSLX, DOCUMENT }
-enum ErrorResponse { ERROR, FAILED, EMPTY, SUCCESS }
+enum ErrorResponse { ERROR, FAILED, EMPTY, SUCCESS, NOT_PERMITTED }
 enum LoaderType { CIRCULAR, LINEAR }
 enum BarcodeTypeEnum {
   Itf,
@@ -40,4 +40,10 @@ enum QrCodeType {
   SOUND,
   SMS,
   VIDEO,
+}
+
+enum ImageCropperState {
+  free,
+  picked,
+  cropped,
 }

@@ -135,9 +135,8 @@ class QrCodeTile extends StatelessWidget {
 
   const QrCodeTile({Key key, this.provider, this.onTap}) : super(key: key);
 
-  Map<String, dynamic> get categoryMap =>
-      qrCodeCategories
-          .firstWhere((Map map) => map['type'] == provider.qrCodeType);
+  Map<String, dynamic> get categoryMap => qrCodeCategories
+      .firstWhere((Map map) => map['type'] == provider.qrCodeType);
 
   @override
   Widget build(BuildContext context) {
@@ -150,11 +149,10 @@ class QrCodeTile extends StatelessWidget {
             data: "${provider.data}",
             backgroundColor: provider.background,
             foregroundColor: provider.foreground,
-            errorStateBuilder: (context, err) =>
-                Text(
-                  "Failed",
-                  style: CustomStyle.errorStyle,
-                ),
+            errorStateBuilder: (context, err) => Text(
+              "Failed",
+              style: CustomStyle.errorStyle,
+            ),
           ),
         ),
       ),

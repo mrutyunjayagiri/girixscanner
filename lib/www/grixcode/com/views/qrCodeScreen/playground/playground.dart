@@ -50,11 +50,14 @@ class _QrCodePlayGroundState extends State<QrCodePlayGround> {
   }
 
   void _onSaveExportTap(BuildContext buildContext) async {
+    print("Background color: ${_backgroundColor}");
+
     final QrCodeProvider _provider = QrCodeProvider(
         fileName: dataSet['name'],
         id: null,
         data: _dataText.toString(),
-        barcode: Barcode.qrCode(typeNumber: _qrVersion == -1 ? 1 : _qrVersion),
+//        barcode: Barcode.qrCode(typeNumber: _qrVersion == -1 ? 1 : _qrVersion),
+        barcode: Barcode.qrCode(),
         background: _backgroundColor,
         foreground: _foregroundColor,
         createdAt: DateTime.now(),
@@ -100,10 +103,9 @@ class _QrCodePlayGroundState extends State<QrCodePlayGround> {
     }
   }
 
-  Map<String, dynamic> get dataSet => {
-        "name": BarcodeUtility.fileName(_textEditingController.text.isEmpty
-            ? Random().nextInt(1500).toString()
-            : _textEditingController.text),
+  Map<String, dynamic> get dataSet =>
+      {
+        "name": BarcodeUtility.fileName("Playground_"),
         "font": _fontSize,
         "height": _height,
         "width": _width,
@@ -130,8 +132,10 @@ class _QrCodePlayGroundState extends State<QrCodePlayGround> {
             height: 300.0,
             width: MediaQuery.of(context).size.width,
             child: DownloadBarcode(
-              barcode:
-                  Barcode.qrCode(typeNumber: _qrVersion == -1 ? 1 : _qrVersion),
+              barcode: Barcode.qrCode(),
+//              barcode: Barcode.qrCode(
+//                  typeNumber:
+//                      _qrVersion == -1 || _qrVersion == 1 ? 2 : _qrVersion),
               model: widget.model,
               dataSet: dataSet,
             ),

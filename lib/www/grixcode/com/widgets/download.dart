@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:girixscanner/www/grixcode/com/config/config.dart';
 import 'package:girixscanner/www/grixcode/com/scopedModel/main_model.dart';
 import 'package:girixscanner/www/grixcode/com/utils/helpers/barcode.dart';
+import 'package:girixscanner/www/grixcode/com/utils/permissions/permissions.dart';
 import 'package:girixscanner/www/grixcode/com/utils/theme/text_style.dart';
 import 'package:image/image.dart' as im;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:permission_handler/permission_handler.dart';
 import 'package:printing/printing.dart';
 
 class DownloadBarcode extends StatelessWidget {
@@ -90,20 +90,7 @@ class DownloadBarcode extends StatelessWidget {
     );
   }
 
-  Future<bool> _checkPermission() async {
-    PermissionStatus status = await Permission.storage.status;
-    if (status.isGranted) {
-      return true;
-    } else {
-      PermissionStatus _requestStatus = await Permission.storage.request();
-      if (_requestStatus.isGranted)
-        return true;
-      else
-        _checkPermission();
-    }
-
-    return false;
-  }
+  Future<bool> _checkPermission() async => GXSPermissions.storage();
 
   Future<String> _getExternalPath() async {
     return BarcodeUtility().getExternalDocumentPath();
